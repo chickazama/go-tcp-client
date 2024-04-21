@@ -8,6 +8,7 @@ import (
 
 func updateOutputView(g *gocui.Gui) {
 	for buf := range c.Incoming {
+		buf[len(buf)-1] = '\n'
 		g.Update(func(g *gocui.Gui) error {
 			v, err := g.View("output")
 			if err != nil {
