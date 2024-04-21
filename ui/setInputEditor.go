@@ -26,11 +26,11 @@ func setInputEditor(v *gocui.View, key gocui.Key, ch rune, mod gocui.Modifier) {
 		v.Overwrite = !v.Overwrite
 	case gocui.KeyEnter:
 		if len(v.Buffer()) > len(name) {
-			v.EditWrite('\n')
+			v.EditWrite(0)
 			out := []byte(v.Buffer())
 			if len(out) > maxBufferLength {
 				out = out[:maxBufferLength]
-				out = append(out, '\n')
+				out = append(out, 0)
 			}
 			c.Outgoing <- out
 			v.Clear()
