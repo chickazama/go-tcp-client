@@ -2,9 +2,7 @@ package client
 
 import (
 	"bufio"
-	"fmt"
 	"net"
-	"os"
 )
 
 type Client struct {
@@ -21,21 +19,17 @@ func New(conn net.Conn) *Client {
 	return ret
 }
 
+// The Send method continuously gets a buffer from the Client's
+// Outgoing channel, and writes it to its TCP connection.
 func (c *Client) Send() error {
 	defer c.Connection.Close()
-	br := bufio.NewReader(os.Stdin)
-	for {
-		buf, err := br.ReadBytes('\n')
-		if err != nil {
-			return err
-		}
-		br.Reset(os.Stdin)
-		buf[len(buf)-1] = 0
-		_, err = c.Connection.Write(buf)
+	for buf := range c.Outgoing {
+		_, err := c.Connection.Write(buf)
 		if err != nil {
 			return err
 		}
 	}
+	return nil
 }
 
 func (c *Client) Receive() error {
@@ -47,7 +41,6 @@ func (c *Client) Receive() error {
 			return err
 		}
 		br.Reset(c.Connection)
-		buf[len(buf)-1] = '\n'
-		fmt.Printf("%s", buf)
+		c.Incoming <- buf
 	}
 }
