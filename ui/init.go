@@ -4,12 +4,14 @@ import (
 	"log"
 	"net"
 
+	"github.com/awesome-gocui/gocui"
 	"github.com/chickazama/go-tcp-client/client"
 )
 
 var (
-	c    *client.Client
-	name string
+	c           *client.Client
+	name        string
+	inputEditor gocui.EditorFunc
 )
 
 const (
@@ -23,4 +25,5 @@ func init() {
 	}
 	c = client.New(conn)
 	name = "Matt"
+	inputEditor = gocui.EditorFunc(setInputEditor)
 }
